@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/backend/main/!svn/ver/112/trunk/Components/Adaptors/libraries
+END
+JsonEncoders.py
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/backend/main/!svn/ver/107/trunk/Components/Adaptors/libraries/JsonEncoders.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/backend/main/!svn/ver/107/trunk/Components/Adaptors/libraries/__init__.py
+END
+feedparser.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/backend/main/!svn/ver/107/trunk/Components/Adaptors/libraries/feedparser.py
+END
+daemon.py
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/backend/main/!svn/ver/107/trunk/Components/Adaptors/libraries/daemon.py
+END
