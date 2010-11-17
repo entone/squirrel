@@ -14,9 +14,11 @@ class DBObject(object):
     db_obj = None
 
     def __init__(self, database=None, collection=None, id=None, obj=None, json_string=None):        
-        self.conn = Connection()
-        if database: self.database = self.conn[database]
-        if collection: self.collection = self.database[collection]
+        self.conn = Connection(host=settings.MONGO_HOST, port=settings.MONGO_PORT)
+        if database: self.db = self.conn[database]
+        if self.db and (database in settings.DATABASES): 
+            self.db.authenticate(settings.DATABASES[database]['username'], settings.DATABASES[database]['password'])
+        if collection: self.collection = self.db[collection]
         if id: 
             self.id = id
             db_obj = self.collection.find_one({"_id":ObjectId(self.id)})

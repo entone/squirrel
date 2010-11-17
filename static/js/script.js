@@ -125,9 +125,13 @@ Collection.prototype.got_documents = function(data){
     $('#docs thead tr').empty();
     $('#docs tbody').empty();
     if(data.length){
-        if(config_headers[this['database']][this['name']]){
-            headers = config_headers[this['database']][this['name']];
-        }else{
+        try{
+            if(config_headers[this['database']][this['name']]){
+                headers = config_headers[this['database']][this['name']];
+            }else{
+                for(h in data[0]) headers.push(h);
+            }
+        }catch(err){
             for(h in data[0]) headers.push(h);
         }
         for(var i=0; i < headers.length; i++){
