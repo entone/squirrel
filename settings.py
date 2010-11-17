@@ -1,8 +1,10 @@
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
+MONGO_HOST = ''
+MONGO_PORT = 1
+
+HARD_CODE_DATABASES = True
 
 DATABASES = {}
-DATABASES['adaptor'] = {"username":"entone", "password":"abudabu1"}
+DATABASES['thetester'] = {"username":"root", "password":"test"}
 
 SERVER_PORT = 8182
 
