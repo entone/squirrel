@@ -1,3 +1,10 @@
+var long_strings = {};
+
+function show_string(key){
+    var st = "<h2>"+key+"</h2>"+long_strings[key];
+    $.modal(st, {overlayClose:true, maxWidth:700});
+}
+
 function base(obj){
     this.url = "/";
     this.__init__(obj);    
@@ -37,6 +44,7 @@ base.prototype.__callback__ = function(obj,fn){
 function Controller(){
     this.__init__(arguments);
     this.databases = [];
+    this.long_strings = {};
 }
 
 Controller.prototype = new base();
@@ -119,10 +127,35 @@ Collection.prototype.got_documents = function(data){
         var row = $("<tr></tr>");
         $('#docs tbody').append(row);
         for(var n in headers){
-            $(row).append("<td>"+data[i][headers[n]]+"</td>");
+            if(typeof(data[i][headers[n]]) == 'string'){
+                var st = data[i][headers[n]] ? data[i][headers[n]] : "&nbsp;";
+            }else{
+                var st = this.parse_object(data[i][headers[n]]);
+            }
+            if(st.length > 255 || typeof(data[i][headers[n]]) != 'string'){
+                var key = headers[n]+" "+i;
+                long_strings[key] = st;
+                var st = "<a href='#' onclick='show_string(\""+key+"\"); return false'>Show "+st.length+" characters</a>";
+            }
+            $(row).append("<td>"+st+"</td>");
         }
     }
     $('#docs').tablesorter();
+}
+
+Collection.prototype.parse_object = function(obj){
+    var str = "<ul>";
+    for(var n in obj){
+        str+="<li>"+n+": ";
+        if(typeof(obj[n]) == 'string'){
+            str+=obj[n];
+        }else{
+            str+= this.parse_object(obj[n]);
+        }
+        str+="</li>";
+    }
+    str+="</ul>";
+    return str;
 }
 
 Collection.prototype.render = function(root){

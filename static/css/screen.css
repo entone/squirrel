@@ -1,6 +1,7 @@
 body,html{
     margin:0px;
     padding:0px;
+    font-size: 10px;
 }
 
 .clearfix:after {
@@ -29,16 +30,64 @@ div#databases a{
 }
     
 #collections{
+    position:absolute;
+    left:0px;
+    top: 0px;
     padding: 10px;
-    float:left;
     width: 200px;
     padding-right: 20px;
     border-right: 10px solid #666666;
 }
 
 #table{
-    float:left;
-    width: 800px;
-    height: 100%;
-    padding-left: 15px;
+    position:absolute;
+    top:0px;
+    left: 250px;
+}
+
+
+table#docs.tablesorter{
+    table-layout:fixed;
+    width: 80%;
+}
+
+table#docs.tablesorter tbody tr td{
+    border-bottom: 1px #dddddd solid;
+    border-left: 1px #dddddd solid;
+}
+
+table#docs.tablesorter tbody tr td:last-child{
+    border-right: 1px #dddddd solid;
+}
+
+table#docs.tablesorter tbody ul{
+    list-style-position: outside;
+    list-style-type: none;
+    margin:0px;
+    padding: 0px;
+}
+
+ul{
+    margin:0px;
+    padding: 0px;
+}
+
+ul li{
+    margin-left: 25px;
+}
+
+table#docs.tablesorter tbody ul li{
+    margin-left: 3px;
+}
+
+table#docs.tablesorter td,th{
+    overflow:hidden;
+}
+
+div.simplemodal-data{
+    border: 15px #eeeeee solid;
+    font-size: 12px;
+    background-color: #cccccc;
+    padding: 12px;
+    overflow:hidden;
 }
