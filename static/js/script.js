@@ -1,10 +1,3 @@
-var long_strings = {};
-
-function show_string(key){
-    var st = "<h2>"+key+"</h2>"+long_strings[key];
-    $.modal(st, {overlayClose:true, maxWidth:700});
-}
-
 function base(obj){
     this.url = "/";
     this.__init__(obj);    
@@ -45,6 +38,7 @@ function Controller(){
     this.__init__(arguments);
     this.databases = [];
     this.long_strings = {};
+    this.dbs_loaded = 0;
 }
 
 Controller.prototype = new base();
@@ -54,39 +48,53 @@ Controller.prototype.init = function(){
     this.ajax('get_databases', this.__callback__(this, this.got_dbs));
 }
 
+Controller.prototype.show_string = function(key){
+    var st = "<h2>"+key+"</h2>"+this.long_strings[key];
+    $.modal(st, {overlayClose:true, maxWidth:700});
+}
+
 Controller.prototype.render = function(root){
     var dbs = $("<div id='databases'></div>");
     for(var i = 0; i < this.databases.length; i++){
         this.databases[i].render(dbs);
     }
     $(root).append(dbs);
+    $(dbs).accordion();
 }
 
 Controller.prototype.got_dbs = function(data){
     for(var i=0; i<data.length; i++){       
-        var db = new Database({name:data[i]});
+        var db = new Database({name:data[i]});        
         this.databases.push(db);
-    }    
+        db.get_collections(this.__callback__(this, this.collection_loaded));
+    }
+}
+
+Controller.prototype.collection_loaded = function(){
+    this.dbs_loaded++;
+    if(this.dbs_loaded == this.databases.length){
+        this.render($("#collections"));        
+    }
 }
 
 function Database(obj){
     this.__init__(obj);
-    this.collections = [];
-    this.get_collections();
+    this.collections = [];    
 }
 
 Database.prototype = new base();
 Database.prototype.constructor = Database;
 
-Database.prototype.get_collections = function(){
+Database.prototype.get_collections = function(callback){
+    this.loaded_callback = callback;
     this.ajax('get_collections', this.__callback__(this, this.got_collections), {database:this.name});
 }
 
 Database.prototype.got_collections = function(data){
-    console.log(data);
     for(var i=0; i<data.length; i++){       
         this.collections.push(new Collection({name:data[i], database:this.name}));
     }
+    this.loaded_callback();
 }
 
 
@@ -117,7 +125,11 @@ Collection.prototype.got_documents = function(data){
     $('#docs thead tr').empty();
     $('#docs tbody').empty();
     if(data.length){
-        for(h in data[0]) headers.push(h);
+        if(config_headers[this['database']][this['name']]){
+            headers = config_headers[this['database']][this['name']];
+        }else{
+            for(h in data[0]) headers.push(h);
+        }
         for(var i=0; i < headers.length; i++){
             $('#docs thead tr').append("<th>"+headers[i]+"</th>");
         }
@@ -134,8 +146,8 @@ Collection.prototype.got_documents = function(data){
             }
             if(st.length > 255 || typeof(data[i][headers[n]]) != 'string'){
                 var key = headers[n]+" "+i;
-                long_strings[key] = st;
-                var st = "<a href='#' onclick='show_string(\""+key+"\"); return false'>Show "+st.length+" characters</a>";
+                controller.long_strings[key] = st;
+                var st = "<a href='#' onclick='controller.show_string(\""+key+"\"); return false'>Show "+st.length+" characters</a>";
             }
             $(row).append("<td>"+st+"</td>");
         }
@@ -169,9 +181,5 @@ var controller = null;
 
 $(document).ready(function(){
     controller = new Controller();
-    controller.init();    
-    setTimeout(function(){
-        controller.render($('#collections'));
-        $('#databases').accordion();                
-    }, 2000);
+    controller.init();
 });
